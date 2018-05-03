@@ -1,0 +1,7 @@
+{
+  "name": "gcp-cicd-pending",
+  "version": "0.0.1",
+  "dependencies": {
+  	"github-api": "3.0.0"
+  }
+}

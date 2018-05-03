@@ -1,0 +1,8 @@
+{
+  "name": "gcp-cicd",
+  "version": "0.0.1",
+  "dependencies": {
+  	"github-api": "3.0.0",
+    "@slack/client": "3.9.0"
+  }
+}
