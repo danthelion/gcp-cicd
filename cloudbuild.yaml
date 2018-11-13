@@ -2,10 +2,10 @@ steps:
 # Set PR status to pending while build is ongoing
 - name: 'gcr.io/cloud-builders/gcloud'
   args: [
-      'beta',
-      'functions',
-      'call','gcp-cicd-set-pending',
-      '--data={"commit_sha":"$COMMIT_SHA", "logUrl":"https://console.cloud.google.com/gcr/builds/$BUILD_ID"}'
+    'beta',
+    'functions',
+    'call','gcp-cicd-set-pending',
+    '--data={"commit_sha":"$COMMIT_SHA", "logUrl":"https://console.cloud.google.com/gcr/builds/$BUILD_ID"}'
   ]
 
 # Pull app:latest image
@@ -15,19 +15,32 @@ steps:
 # Build main image using :latest as build cache
 - name: 'gcr.io/cloud-builders/docker'
   args: [
-        'build',
-        '--cache-from', 'eu.gcr.io/$PROJECT_ID/app:latest',
-        '-f', 'Dockerfile',
-        '-t', 'eu.gcr.io/$PROJECT_ID/app:$COMMIT_SHA',
-        '.'
-      ]
+    'build',
+    '--cache-from', 'eu.gcr.io/$PROJECT_ID/app:latest',
+    '-f', 'Dockerfile',
+    '-t', 'eu.gcr.io/$PROJECT_ID/app:$COMMIT_SHA',
+    '.'
+  ]
 
 # Run unittests
 - name: 'gcr.io/cloud-builders/docker'
   args: [
-        'run',
-        'eu.gcr.io/$PROJECT_ID/app:$COMMIT_SHA',
-      ]
+    'run',
+    'eu.gcr.io/$PROJECT_ID/app:$COMMIT_SHA',
+  ]
+
+# Deploy the image to GKE
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: [
+    'set',
+    'image',
+    'deployment',
+    'app',
+    'app=gcr.io/$PROJECT_ID/app:$COMMIT_SHA'
+  ]
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=europe-west3-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=k8s-cicd'
 
 # app image is pushed to Google Container Registry
 images:

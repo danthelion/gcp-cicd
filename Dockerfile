@@ -3,11 +3,12 @@ FROM python:3.6
 # Set working directory
 WORKDIR /usr/src/app
 
-# Install pytest
-RUN pip install pytest
+# Install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
 # Copy our code
 COPY . .
 
-# Run tests
-CMD ["pytest", "./main.py"]
+# Run flask web server
+CMD ["python", "./main.py"]

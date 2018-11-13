@@ -1,6 +1,12 @@
-def increment_number_by_one(x: int) -> int:
-    return x + 1
+from flask import Flask
+
+app = Flask(__name__)
 
 
-def test_increment_number_by_one() -> None:
-    assert increment_number_by_one(3) == 4
+@app.route('/')
+def hello_world():
+    return 'Hello, World!'
+
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0')
